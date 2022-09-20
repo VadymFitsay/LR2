@@ -3,6 +3,7 @@ import com.fitsay.LR2.patient.Patient;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.ArrayList;
 /**
  * Клас для демонстрації функціональності класу Patient.
  * Дані зчитуються з файлу data.txt і виводяться на екран інформація про пацієнтів.
@@ -11,29 +12,39 @@ import java.util.Scanner;
  * Метод Num виводить пацієнтів в яких номер телефона починається з вказаної цифри яку вводить користувач
  * @author Vadym Fitsay
  */
-
 public class Main {
     /**
      * Демонстрація методів.
      * @param args масив параметрів командного рядка
      */
-
     public static void main(String[] args) throws FileNotFoundException {
         Patient[] patient = setArr();
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Пошук пацієнтів за діагнозом: ");
-        Diag(patient,scanner.nextLine());
-        System.out.println("Пошук пацієнтів за номером медичної картки в інтервалі:");
-        Num_med(patient,scanner.nextInt(),scanner.nextInt());
-        System.out.println("Пошук пацієнтів за першою цифрою номеру телефону: ");
-        Num(patient, scanner.next().charAt(0));
+        String value;
+        do {
+            System.out.println("Пошук пацієнтів за");
+            System.out.println("1. Діагнозом");
+            System.out.println("2. Діапазоном номеру медкартки");
+            System.out.println("3. Номером телефону");
+            System.out.println("4.Вихід\n");
+            value = scanner.nextLine();
+            switch (value) {
+                case "1" -> Diag(patient,scanner.nextLine());
+                case "2" ->  {Num_med(patient,scanner.nextInt(),scanner.nextInt());
+                scanner.nextLine();}
+                case "3" -> {
+                    System.out.println("Введіть 4 цифри з номера телефона:");
+                    Print_P(Num(patient, scanner.nextLine()));
+                }
+                case "4" -> System.out.println("Завершення програми");
+            }
+        } while (!value.equals("4"));
         scanner.close();
     }
     /**
      * Метод для створення та заповнення масиву даними
      * @return повертає масив об'єктів з типом Patient
      */
-
     public static Patient[] setArr() throws FileNotFoundException {
         String separator = File.separator;
         String path = separator + "Users" + separator + "Admin" + separator + "IdeaProjects" + separator + "LR2" + separator + "src" + separator + "com"+ separator + "fitsay" + separator + "LR2"+separator + "data.txt";
@@ -45,22 +56,15 @@ public class Main {
         {
             Patient x = new Patient();
             x.setid(i+1);
-            System.out.println("Пацієнт №" + x.getid());
             x.setSurname(scanner.nextLine());
-            System.out.println("Прізвище: " + x.getSurname());
             x.setName(scanner.nextLine());
-            System.out.println("Ім'я: "+ x.getName());
             x.setPatronymic(scanner.nextLine());
-            System.out.println("По-батькові: "+ x.getPatronymic());
             x.setAddress(scanner.nextLine());
-            System.out.println("Адреса: " + x.getAddress());
             x.setNumber(scanner.nextLine());
-            System.out.println("Номер телефону: " + x.getNumber());
             x.setNumber_med_CARD(scanner.nextInt());
-            System.out.println("Номер медичної картки: " + x.getNumber_med_CARD());
             scanner.nextLine();
             x.setDiagnosis(scanner.nextLine());
-            System.out.println("Діагноз: "+ x.getDiagnosis());
+            System.out.print(x +"\n\n");
             patient[i] = x;
         }
         scanner.close();
@@ -95,18 +99,30 @@ public class Main {
             }
         }
     }
-
     /**
      * Метод для виведення масиву об'єктів типу Patient
      * в яких номер телефону починається на цифру num
      * @param x масив об'єктів типу Patient
      * @param num перша цифра номеру телефону
      */
-    public static void Num(Patient[] x, char num){
+    public static Patient[] Num(Patient[] x, String num){
+        ArrayList<Patient> y = new ArrayList<Patient>();
         for (Patient x2:x) {
-            if (num == (x2.getNumber().charAt(4))) {
-                System.out.print(x2 +"\n\n");
+            for (int i = 9; i > 2; i--) {
+                if (x2.getNumber().regionMatches(i, num, 0, 4)) {
+                    y.add(x2);
+                    break;
+                }
             }
+        }
+        Patient[] Patient = y.toArray(new Patient[y.size()]);
+        return Patient;
+    }
+    public static void Print_P(Patient[] x){
+        System.out.println("Кількість: " + x.length);
+        for (Patient x2:x) {
+            System.out.print(x2 +"\n\n");
+
         }
     }
 }

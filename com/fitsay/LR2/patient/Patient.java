@@ -37,7 +37,7 @@ public class Patient {
         this.Number_med_CARD = Number_med_CARD;
         this.Diagnosis = Diagnosis;
     }
-    public int getid() {
+    public int getId() {
         return id;
     }
     public void setid(int id) {
